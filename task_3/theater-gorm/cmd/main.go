@@ -4,6 +4,7 @@ import (
 	"go-training-spring-2021/task_3/theater-gorm/pkg/data"
 	"go-training-spring-2021/task_3/theater-gorm/pkg/db"
 
+	"fmt"
 	"log"
 	"os"
 )
@@ -56,61 +57,42 @@ func main() {
 		log.Fatalf("got an error when tried to call UpdateAccount method: %v", err)
 	}
 
-	//err = theaterData.DeleteAccount(data.Account{Id: 13})
-	//if err != nil {
-	//	log.Fatalf("got an error when tried to call DeleteAccount method: %v", err)
-	//}
+	err = theaterData.DeleteAccount(data.Account{Id: 13})
+	if err != nil {
+		log.Fatalf("got an error when tried to call DeleteAccount method: %v", err)
+	}
 
-	//err = theaterData.AddLocation(data.Location{
-	//	AccountId:   2,
-	//	Address:     "WholeStreet",
-	//	PhoneNumber: "+7754446389",
-	//})
-	//if err != nil {
-	//	log.Fatalf("got an error when tried to call AddHall method: %v", err)
-	//}
+	_, err = theaterData.AddAccount(data.Account{
+		FirstName:   "Dim",
+		LastName:    "Ivanov",
+		PhoneNumber: "+375296574897",
+		Email:       "dimaivanov@gmail.com",
+	})
+	if err != nil {
+		log.Fatalf("got an error when tried to call AddAccount method: %v", err)
+	}
 
-	//err = theaterData.AddHall(data.Hall{
-	//	AccountId:  2,
-	//	Name:       "HappyHall",
-	//	Capacity:   500,
-	//	LocationId: 2,
-	//})
-	//if err != nil {
-	//	log.Fatalf("got an error when tried to call AddHall method: %v", err)
-	//}
+	tickets, err := theaterData.ReadAllTickets()
+	if err != nil {
+		log.Fatalf("got an error when tried to call ReadAllTickets method: %v", err)
+	}
+	for _, el := range tickets {
+		fmt.Println(el)
+	}
 
-	//err = theaterData.AddAccount(data.Account{
-	//	FirstName:   "Dim",
-	//	LastName:    "Ivanov",
-	//	PhoneNumber: "+375296574897",
-	//	Email:       "dimaivanov@gmail.com",
-	//})
-	//if err != nil {
-	//	log.Fatalf("got an error when tried to call AddAccount method: %v", err)
-	//}
+	posters, err := theaterData.ReadAllPosters()
+	if err != nil {
+		log.Fatalf("got an error when tried to call ReadAllPosters method: %v", err)
+	}
+	for _, el := range posters {
+		log.Println(el)
+	}
 
-	//tickets, err := theaterData.ReadAllTickets()
-	//if err != nil {
-	//	log.Fatalf("got an error when tried to call ReadAllTickets method: %v", err)
-	//}
-	//for _, el := range tickets {
-	//	fmt.Println(el)
-	//}
-
-	//posters, err := theaterData.ReadAllPosters()
-	//if err != nil {
-	//	log.Fatalf("got an error when tried to call ReadAllPosters method: %v", err)
-	//}
-	//for _, el := range posters {
-	//	log.Println(el)
-	//}
-	//
-	//users, err := theaterData.ReadAllUsers(data.Account{Id: 1})
-	//if err != nil {
-	//	log.Fatalf("got an error when tried to call ReadAllUsers method: %v", err)
-	//}
-	//for _, el := range users {
-	//	log.Println(el)
-	//}
+	users, err := theaterData.ReadAllUsers(data.Account{Id: 1})
+	if err != nil {
+		log.Fatalf("got an error when tried to call ReadAllUsers method: %v", err)
+	}
+	for _, el := range users {
+		log.Println(el)
+	}
 }

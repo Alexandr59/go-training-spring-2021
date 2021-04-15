@@ -2,6 +2,7 @@ package data
 
 import (
 	"fmt"
+
 	"gorm.io/gorm"
 )
 
@@ -13,43 +14,24 @@ type Account struct {
 	Email       string `gorm:"email"`
 }
 
-type SelectTicket struct { /////?????
-	Id                  int    `gorm:"primaryKey"`
-	PerformanceName     string `gorm:"p.name"`
-	GenreName           string `gorm:"g.name"`
-	PerformanceDuration string `gorm:"p.duration"`
-	DateTime            string `gorm:"s.date"`
-	HallName            string `gorm:"h.name"`
-	HallCapacity        int    `gorm:"h.capacity"`
-	LocationAddress     string `gorm:"l.address"`
-	LocationPhoneNumber string `gorm:"l.phone_number"`
-	SectorName          string `gorm:"s2.name"`
-	Place               int    `gorm:"p2.name"`
-	Price               int    `gorm:"p3.price"`
-	DateOfIssue         string `gorm:"date_of_issue"`
-	Paid                bool   `gorm:"paid"`
-	Reservation         bool   `gorm:"reservation"`
-	Destroyed           bool   `gorm:"destroyed"`
+type SelectTicket struct {
+	Id                  int
+	PerformanceName     string
+	GenreName           string
+	PerformanceDuration string
+	DateTime            string
+	HallName            string
+	HallCapacity        int
+	LocationAddress     string
+	LocationPhoneNumber string
+	SectorName          string
+	Place               int
+	Price               int
+	DateOfIssue         string
+	Paid                bool
+	Reservation         bool
+	Destroyed           bool
 }
-
-//type SelectTicket struct { /////?????
-//	Id                  int    `gorm:"primaryKey"`
-//	PerformanceName     string `gorm:"name"`
-//	GenreName           string `gorm:"name"`
-//	PerformanceDuration string `gorm:"duration"`
-//	DateTime            string `gorm:"date"`
-//	HallName            string `gorm:"name"`
-//	HallCapacity        int    `gorm:"capacity"`
-//	LocationAddress     string `gorm:"address"`
-//	LocationPhoneNumber string `gorm:"phone_number"`
-//	SectorName          string `gorm:"name"`
-//	Place               int    `gorm:"name"`
-//	Price               int    `gorm:"price"`
-//	DateOfIssue         string `gorm:"date_of_issue"`
-//	Paid                bool   `gorm:"paid"`
-//	Reservation         bool   `gorm:"reservation"`
-//	Destroyed           bool   `gorm:"destroyed"`
-//}
 
 type Ticket struct {
 	Id          int    `gorm:"primaryKey"`
@@ -62,7 +44,7 @@ type Ticket struct {
 	Destroyed   bool   `gorm:"destroyed"`
 }
 
-type SelectPoster struct { /////////?????
+type SelectPoster struct {
 	Id                  int
 	PerformanceName     string
 	GenreName           string
@@ -75,14 +57,14 @@ type SelectPoster struct { /////////?????
 	Comment             string
 }
 
-type SelectUser struct { ////////////////?????
-	Id                  int    `gorm:"primaryKey"`
-	FirstName           string `gorm:"first_name"`
-	LastName            string `gorm:"last_name"`
-	Role                string `gorm:"role"`
-	LocationAddress     string `gorm:"location_address"`
-	LocationPhoneNumber string `gorm:"location"`
-	PhoneNumber         string `gorm:"phone_number"`
+type SelectUser struct {
+	Id                  int
+	FirstName           string
+	LastName            string
+	Role                string
+	LocationAddress     string
+	LocationPhoneNumber string
+	PhoneNumber         string
 }
 
 type User struct {
@@ -119,7 +101,7 @@ type Performance struct {
 }
 
 type Place struct {
-	id       int    `gorm:"primaryKey"`
+	Id       int    `gorm:"primaryKey"`
 	SectorId int    `gorm:"sector_id"`
 	Name     string `gorm:"name"`
 }
@@ -170,177 +152,186 @@ func NewTheaterData(db *gorm.DB) *TheaterData {
 	return &TheaterData{db: db}
 }
 
-func (u TheaterData) ReadAllTickets() ([]Ticket, error) {
-	var tickets []Ticket
-	//result := u.db.Model(&Ticket{}).Select("tickets.id, p.name, g.name, p.duration, s.date, h.name, h.capacity, l.address, " +
-	//	"l.phone_number, s2.name, p2.name, p3.price, tickets.date_of_issue, tickets.paid, tickets.reservation, " +
-	//	"tickets.destroyed").Joins("JOIN schedule s on s.id = tickets.schedule_id").Joins("JOIN " +
-	//	"performance p on s.performance_id = p.id ").Joins("JOIN genre " +
-	//	"g on p.genre_id = g.id ").Joins("JOIN halls h on s.hall_id = h.id").Joins("JOIN " +
-	//	"locations l on h.location_id = l.id").Joins("JOIN places p2 on tickets.place_id = " +
-	//	"p2.id").Joins("JOIN sectors s2 on p2.sector_id = s2.id").Joins("JOIN price p3 on p.id = " +
-	//	"p3.performance_id and s2.id = p3.sector_id").Scan(&tickets)
-
-	//u.db = u.db.Joins("JOIN schedule s on s.id = tickets.schedule_id")
-	//u.db = u.db.Joins("JOIN performance p on s.performance_id = p.id")
-	//u.db = u.db.Joins("JOIN genre g on p.genre_id = g.id")
-	//u.db = u.db.Joins("JOIN halls h on s.hall_id = h.id")
-	//u.db = u.db.Joins("JOIN locations l on h.location_id = l.id")
-	//u.db = u.db.Joins("JOIN places p2 on tickets.place_id = p2.id")
-	//u.db = u.db.Joins("JOIN sectors s2 on p2.sector_id = s2.id")
-	//u.db = u.db.Joins("JOIN price p3 on p.id = p3.performance_id and s2.id = p3.sector_id")
-	//u.db = u.db.Select("tickets.id, p.name, g.name, p.duration, s.date, h.name, h.capacity, l.address, l.phone_number, s2.name, p2.name, p3.price, tickets.date_of_issue, tickets.paid, tickets.reservation, tickets.destroyed")
-	//u.db = u.db.Table("tickets").Find(&tickets)
-
-	result := u.db.Find(&tickets)
-
-	//result := u.db.Preload("performance").Find(&tickets)
-
-	if result.Error != nil {
-		return nil, fmt.Errorf("can't read users from database, error: %w", result.Error)
+func (u TheaterData) ReadAllTickets() ([]SelectTicket, error) {
+	var tickets []SelectTicket
+	rows, err := u.db.Table("tickets").Select("tickets.id, performance.name, genre.name, " +
+		"performance.duration, schedule.date, halls.name, halls.capacity, locations.address, " +
+		"locations.phone_number, sectors.name, places.name, price.price, tickets.date_of_issue, " +
+		"tickets.paid, tickets.reservation, tickets.destroyed").
+		Joins("JOIN schedule on schedule.id = tickets.schedule_id").
+		Joins("JOIN performance on schedule.performance_id = performance.id").
+		Joins("JOIN genre on performance.genre_id = genre.id").
+		Joins("JOIN halls on schedule.hall_id = halls.id").
+		Joins("JOIN locations on halls.location_id = locations.id").
+		Joins("JOIN places on tickets.place_id = places.id").
+		Joins("JOIN sectors on places.sector_id = sectors.id").
+		Joins("JOIN price on performance.id = price.performance_id and sectors.id = price.sector_id").
+		Rows()
+	if err != nil {
+		return nil, fmt.Errorf("can't read users from database, error:%w", err)
+	}
+	for rows.Next() {
+		temp := SelectTicket{}
+		err := rows.Scan(&temp.Id, &temp.PerformanceName, &temp.GenreName, &temp.PerformanceDuration, &temp.DateTime, &temp.HallName, &temp.HallCapacity, &temp.LocationAddress, &temp.LocationPhoneNumber, &temp.SectorName, &temp.Place, &temp.Price, &temp.DateOfIssue, &temp.Paid, &temp.Reservation, &temp.Destroyed)
+		if err != nil {
+			return nil, fmt.Errorf("can't scan tickets from database, error:%w", err)
+		}
+		tickets = append(tickets, temp)
 	}
 	return tickets, nil
 }
 
-//func (u TheaterData) ReadAllPosters() ([]Poster, error) {
-//	var posters []Poster
-//	rows, err := u.db.Query(readAllPostersQuery)
-//	if err != nil {
-//		return nil, fmt.Errorf("can't get posters from database, error:%w", err)
-//	}
-//	for rows.Next() {
-//		var temp Poster
-//		err = rows.Scan(&temp.Id, &temp.PerformanceName, &temp.GenreName, &temp.PerformanceDuration,
-//			&temp.DateTime, &temp.HallName, &temp.HallCapacity, &temp.LocationAddress, &temp.LocationPhoneNumber,
-//			&temp.Comment)
-//		if err != nil {
-//			return nil, fmt.Errorf("can't scan posters from database, error:%w", err)
-//		}
-//		posters = append(posters, temp)
-//	}
-//	return posters, nil
-//}
-//
-//func (u TheaterData) ReadAllUsers(account Account) ([]User, error) {
-//	var users []User
-//	rows, err := u.db.Query(readAllUsersQuery, account.Id)
-//	if err != nil {
-//		return nil, fmt.Errorf("can't get users from database, error:%w", err)
-//	}
-//	for rows.Next() {
-//		var temp User
-//		err = rows.Scan(&temp.Id, &temp.FirstName, &temp.LastName, &temp.Role,
-//			&temp.LocationAddress, &temp.LocationPhoneNumber, &temp.PhoneNumber)
-//		if err != nil {
-//			return nil, fmt.Errorf("can't scan users from database, error:%w", err)
-//		}
-//		users = append(users, temp)
-//	}
-//	return users, nil
-//}
+func (u TheaterData) ReadAllPosters() ([]SelectPoster, error) {
+	var posters []SelectPoster
+	rows, err := u.db.Table("poster").Select("poster.id, performance.name, genre.name, " +
+		"performance.duration, schedule.date, halls.name, halls.capacity, locations.address, locations.phone_number, poster.comment ").
+		Joins("JOIN schedule on schedule.id = poster.schedule_id").
+		Joins("JOIN performance on schedule.performance_id = performance.id").
+		Joins("JOIN genre on performance.genre_id = genre.id").
+		Joins("JOIN halls on schedule.hall_id = halls.id").
+		Joins("JOIN locations on halls.location_id = locations.id").
+		Rows()
+	if err != nil {
+		return nil, fmt.Errorf("can't get posters from database, error:%w", err)
+	}
+	for rows.Next() {
+		var temp SelectPoster
+		err = rows.Scan(&temp.Id, &temp.PerformanceName, &temp.GenreName, &temp.PerformanceDuration,
+			&temp.DateTime, &temp.HallName, &temp.HallCapacity, &temp.LocationAddress, &temp.LocationPhoneNumber,
+			&temp.Comment)
+		if err != nil {
+			return nil, fmt.Errorf("can't scan posters from database, error:%w", err)
+		}
+		posters = append(posters, temp)
+	}
+	return posters, nil
+}
 
-func (u TheaterData) AddAccount(account Account) error {
+func (u TheaterData) ReadAllUsers(account Account) ([]SelectUser, error) {
+	var users []SelectUser
+	rows, err := u.db.Table("users").Select("users.id, users.first_name, "+
+		"users.last_name, roles.name, locations.address, locations.phone_number, users.phone_number").
+		Joins("JOIN roles on users.role_id = roles.id").
+		Joins("JOIN locations on locations.id = users.account_id").
+		Where("users.account_id = ?", account.Id).
+		Rows()
+	if err != nil {
+		return nil, fmt.Errorf("can't get users from database, error:%w", err)
+	}
+	for rows.Next() {
+		var temp SelectUser
+		err = rows.Scan(&temp.Id, &temp.FirstName, &temp.LastName, &temp.Role,
+			&temp.LocationAddress, &temp.LocationPhoneNumber, &temp.PhoneNumber)
+		if err != nil {
+			return nil, fmt.Errorf("can't scan users from database, error:%w", err)
+		}
+		users = append(users, temp)
+	}
+	return users, nil
+}
+
+func (u TheaterData) AddAccount(account Account) (int, error) {
 	result := u.db.Create(&account)
 	if result.Error != nil {
-		return fmt.Errorf("can't inser account to database, error: %w", result.Error)
+		return -1, fmt.Errorf("can't inser account to database, error: %w", result.Error)
 	}
-	return nil
+	return account.Id, nil
 }
 
-func (u TheaterData) AddGenre(genre Genre) error {
+func (u TheaterData) AddGenre(genre Genre) (int, error) {
 	result := u.db.Create(&genre)
 	if result.Error != nil {
-		return fmt.Errorf("can't inser genre to database, error: %w", result.Error)
+		return -1, fmt.Errorf("can't inser genre to database, error: %w", result.Error)
 	}
-	return nil
+	return genre.Id, nil
 }
 
-func (u TheaterData) AddHall(hall Hall) error {
+func (u TheaterData) AddHall(hall Hall) (int, error) {
 	result := u.db.Create(&hall)
 	if result.Error != nil {
-		return fmt.Errorf("can't inser hall to database, error: %w", result.Error)
+		return -1, fmt.Errorf("can't inser hall to database, error: %w", result.Error)
 	}
-	return nil
+	return hall.Id, nil
 }
 
-func (u TheaterData) AddLocation(location Location) error {
+func (u TheaterData) AddLocation(location Location) (int, error) {
 	result := u.db.Create(&location)
 	if result.Error != nil {
-		return fmt.Errorf("can't inser location to database, error: %w", result.Error)
+		return -1, fmt.Errorf("can't inser location to database, error: %w", result.Error)
 	}
-	return nil
+	return location.Id, nil
 }
 
-func (u TheaterData) AddPerformance(performance Performance) error {
+func (u TheaterData) AddPerformance(performance Performance) (int, error) {
 	result := u.db.Create(&performance)
 	if result.Error != nil {
-		return fmt.Errorf("can't inser Performance to database, error: %w", result.Error)
+		return -1, fmt.Errorf("can't inser Performance to database, error: %w", result.Error)
 	}
-	return nil
+	return performance.Id, nil
 }
 
-func (u TheaterData) AddPlace(place Place) error {
+func (u TheaterData) AddPlace(place Place) (int, error) {
 	result := u.db.Create(&place)
 	if result.Error != nil {
-		return fmt.Errorf("can't inser Place to database, error: %w", result.Error)
+		return -1, fmt.Errorf("can't inser Place to database, error: %w", result.Error)
 	}
-	return nil
+	return place.Id, nil
 }
 
-func (u TheaterData) AddPoster(poster Poster) error {
+func (u TheaterData) AddPoster(poster Poster) (int, error) {
 	result := u.db.Create(&poster)
 	if result.Error != nil {
-		return fmt.Errorf("can't inser Poster to database, error: %w", result.Error)
+		return -1, fmt.Errorf("can't inser Poster to database, error: %w", result.Error)
 	}
-	return nil
+	return poster.Id, nil
 }
 
-func (u TheaterData) AddPrice(price Price) error {
+func (u TheaterData) AddPrice(price Price) (int, error) {
 	result := u.db.Create(&price)
 	if result.Error != nil {
-		return fmt.Errorf("can't inser Price to database, error: %w", result.Error)
+		return -1, fmt.Errorf("can't inser Price to database, error: %w", result.Error)
 	}
-	return nil
+	return price.Id, nil
 }
 
-func (u TheaterData) AddRole(role Role) error {
+func (u TheaterData) AddRole(role Role) (int, error) {
 	result := u.db.Create(&role)
 	if result.Error != nil {
-		return fmt.Errorf("can't inser Role to database, error: %w", result.Error)
+		return -1, fmt.Errorf("can't inser Role to database, error: %w", result.Error)
 	}
-	return nil
+	return role.Id, nil
 }
 
-func (u TheaterData) AddSchedule(schedule Schedule) error {
+func (u TheaterData) AddSchedule(schedule Schedule) (int, error) {
 	result := u.db.Create(&schedule)
 	if result.Error != nil {
-		return fmt.Errorf("can't inser Schedule to database, error: %w", result.Error)
+		return -1, fmt.Errorf("can't inser Schedule to database, error: %w", result.Error)
 	}
-	return nil
+	return schedule.Id, nil
 }
 
-func (u TheaterData) AddSector(sector Sector) error {
+func (u TheaterData) AddSector(sector Sector) (int, error) {
 	result := u.db.Create(&sector)
 	if result.Error != nil {
-		return fmt.Errorf("can't inser Sector to database, error: %w", result.Error)
+		return -1, fmt.Errorf("can't inser Sector to database, error: %w", result.Error)
 	}
-	return nil
+	return sector.Id, nil
 }
 
-func (u TheaterData) AddTicket(ticket Ticket) error {
+func (u TheaterData) AddTicket(ticket Ticket) (int, error) {
 	result := u.db.Create(&ticket)
 	if result.Error != nil {
-		return fmt.Errorf("can't inser Ticket to database, error: %w", result.Error)
+		return -1, fmt.Errorf("can't inser Ticket to database, error: %w", result.Error)
 	}
-	return nil
+	return ticket.Id, nil
 }
 
-func (u TheaterData) AddUser(user User) error {
+func (u TheaterData) AddUser(user User) (int, error) {
 	result := u.db.Create(&user)
 	if result.Error != nil {
-		return fmt.Errorf("can't inser User to database, error: %w", result.Error)
+		return -1, fmt.Errorf("can't inser User to database, error: %w", result.Error)
 	}
-	return nil
+	return user.Id, nil
 }
 
 func (u TheaterData) DeleteAccount(entry Account) error {
@@ -549,4 +540,107 @@ func (u TheaterData) UpdateUser(user User) error {
 		return fmt.Errorf("can't update User to database, error: %w", result.Error)
 	}
 	return nil
+}
+
+func (u TheaterData) FindByIdAccount(entry Account) (Account, error) {
+	result := u.db.First(&entry)
+	if result.Error != nil {
+		return Account{}, fmt.Errorf("can't find Account to database, error: %w", result.Error)
+	}
+	return entry, nil
+}
+func (u TheaterData) FindByIdGenre(entry Genre) (Genre, error) {
+	result := u.db.First(&entry)
+	if result.Error != nil {
+		return Genre{}, fmt.Errorf("can't find Genre to database, error: %w", result.Error)
+	}
+	return entry, nil
+}
+
+func (u TheaterData) FindByIdHall(entry Hall) (Hall, error) {
+	result := u.db.First(&entry)
+	if result.Error != nil {
+		return Hall{}, fmt.Errorf("can't find Hall to database, error: %w", result.Error)
+	}
+	return entry, nil
+}
+
+func (u TheaterData) FindByIdLocation(entry Location) (Location, error) {
+	result := u.db.First(&entry)
+	if result.Error != nil {
+		return Location{}, fmt.Errorf("can't find Location to database, error: %w", result.Error)
+	}
+	return entry, nil
+}
+
+func (u TheaterData) FindByIdPerformance(entry Performance) (Performance, error) {
+	result := u.db.First(&entry)
+	if result.Error != nil {
+		return Performance{}, fmt.Errorf("can't find Performance to database, error: %w", result.Error)
+	}
+	return entry, nil
+}
+
+func (u TheaterData) FindByIdPlace(entry Place) (Place, error) {
+	result := u.db.First(&entry)
+	if result.Error != nil {
+		return Place{}, fmt.Errorf("can't find Place to database, error: %w", result.Error)
+	}
+	return entry, nil
+}
+
+func (u TheaterData) FindByIdPoster(entry Poster) (Poster, error) {
+	result := u.db.First(&entry)
+	if result.Error != nil {
+		return Poster{}, fmt.Errorf("can't find Poster to database, error: %w", result.Error)
+	}
+	return entry, nil
+}
+
+func (u TheaterData) FindByIdPrice(entry Price) (Price, error) {
+	result := u.db.First(&entry)
+	if result.Error != nil {
+		return Price{}, fmt.Errorf("can't find Price to database, error: %w", result.Error)
+	}
+	return entry, nil
+}
+
+func (u TheaterData) FindByIdRole(entry Role) (Role, error) {
+	result := u.db.First(&entry)
+	if result.Error != nil {
+		return Role{}, fmt.Errorf("can't find Role to database, error: %w", result.Error)
+	}
+	return entry, nil
+}
+
+func (u TheaterData) FindByIdSchedule(entry Schedule) (Schedule, error) {
+	result := u.db.First(&entry)
+	if result.Error != nil {
+		return Schedule{}, fmt.Errorf("can't find Schedule to database, error: %w", result.Error)
+	}
+	return entry, nil
+}
+
+func (u TheaterData) FindByIdSector(entry Sector) (Sector, error) {
+	result := u.db.First(&entry)
+	if result.Error != nil {
+		return Sector{}, fmt.Errorf("can't find Sector to database, error: %w", result.Error)
+	}
+	return entry, nil
+}
+
+func (u TheaterData) FindByIdTicket(entry Ticket) (Ticket, error) {
+	result := u.db.First(&entry)
+	if result.Error != nil {
+		return Ticket{}, fmt.Errorf("can't find Ticket to database, error: %w", result.Error)
+	}
+	return entry, nil
+}
+
+func (u TheaterData) FindByIdUser(entry User) (User, error) {
+	result := u.db.First(&entry)
+	if result.Error != nil {
+		return User{}, fmt.Errorf("can't find User to database, error: %w", result.Error)
+	}
+	return entry, nil
 }
