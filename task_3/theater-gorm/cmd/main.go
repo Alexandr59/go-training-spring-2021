@@ -1,10 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"go-training-spring-2021/task_3/theater-gorm/pkg/data"
 	"go-training-spring-2021/task_3/theater-gorm/pkg/db"
 
-	"fmt"
 	"log"
 	"os"
 )
@@ -46,31 +46,34 @@ func main() {
 	}
 	theaterData := data.NewTheaterData(conn)
 
-	err = theaterData.UpdateAccount(data.Account{
-		Id:          11,
-		FirstName:   "YYYYYYY",
-		LastName:    "OOOOOOOOO",
-		PhoneNumber: "435345435e345",
-		Email:       " lvlf,d;d",
-	})
-	if err != nil {
-		log.Fatalf("got an error when tried to call UpdateAccount method: %v", err)
-	}
-
-	err = theaterData.DeleteAccount(data.Account{Id: 13})
-	if err != nil {
-		log.Fatalf("got an error when tried to call DeleteAccount method: %v", err)
-	}
-
-	_, err = theaterData.AddAccount(data.Account{
-		FirstName:   "Dim",
-		LastName:    "Ivanov",
-		PhoneNumber: "+375296574897",
-		Email:       "dimaivanov@gmail.com",
-	})
-	if err != nil {
-		log.Fatalf("got an error when tried to call AddAccount method: %v", err)
-	}
+	//err = theaterData.UpdateAccount(data.Account{
+	//	Id:          11,
+	//	FirstName:   "YYYYYYY",
+	//	LastName:    "OOOOOOOOO",
+	//	PhoneNumber: "435345435e345",
+	//	Email:       " lvlf,d;d",
+	//})
+	//if err != nil {
+	//	log.Fatalf("got an error when tried to call UpdateAccount method: %v", err)
+	//}
+	//
+	//err = theaterData.DeleteAccount(data.Account{Id: 13})
+	//if err != nil {
+	//	log.Fatalf("got an error when tried to call DeleteAccount method: %v", err)
+	//}
+	//
+	//_, err = theaterData.AddAccount(data.Account{
+	//	FirstName:   "Dim",
+	//	LastName:    "Ivanov",
+	//	PhoneNumber: "+375296574897",
+	//	Email:       "dimaivanov@gmail.com",
+	//})
+	//if err != nil {
+	//	log.Fatalf("got an error when tried to call AddAccount method: %v", err)
+	//}
+	//a, err := theaterData.FindByIdAccount(data.Account{Id: 1})
+	//
+	//fmt.Println(a)
 
 	tickets, err := theaterData.ReadAllTickets()
 	if err != nil {

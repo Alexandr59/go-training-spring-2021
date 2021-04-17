@@ -98,19 +98,19 @@ func main() {
 		log.Println(el)
 	}
 
-	//posters, err := theaterData.ReadAllPosters()
-	//if err != nil {
-	//	log.Fatalf("got an error when tried to call ReadAllPosters method: %v", err)
-	//}
-	//for _, el := range posters {
-	//	log.Println(el)
-	//}
-	//
-	//users, err := theaterData.ReadAllUsers(data.Account{Id: 1})
-	//if err != nil {
-	//	log.Fatalf("got an error when tried to call ReadAllUsers method: %v", err)
-	//}
-	//for _, el := range users {
-	//	log.Println(el)
-	//}
+	posters, err := theaterData.ReadAllPosters()
+	if err != nil {
+		log.Fatalf("got an error when tried to call ReadAllPosters method: %v", err)
+	}
+	for _, el := range posters {
+		log.Println(el)
+	}
+
+	users, err := theaterData.ReadAllUsers(data.Account{Id: 1})
+	if err != nil {
+		log.Fatalf("got an error when tried to call ReadAllUsers method: %v", err)
+	}
+	for _, el := range users {
+		log.Println(el)
+	}
 }

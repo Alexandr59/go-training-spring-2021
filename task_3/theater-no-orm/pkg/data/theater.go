@@ -13,7 +13,7 @@ type Account struct {
 	Email       string
 }
 
-type Ticket struct {
+type SelectTicket struct {
 	Id                  int
 	PerformanceName     string
 	GenreName           string
@@ -32,7 +32,7 @@ type Ticket struct {
 	Destroyed           bool
 }
 
-type TicketInsert struct {
+type Ticket struct {
 	Id          int
 	AccountId   int
 	ScheduleId  int
@@ -43,7 +43,7 @@ type TicketInsert struct {
 	Destroyed   bool
 }
 
-type Poster struct {
+type SelectPoster struct {
 	Id                  int
 	PerformanceName     string
 	GenreName           string
@@ -56,7 +56,7 @@ type Poster struct {
 	Comment             string
 }
 
-type User struct {
+type SelectUser struct {
 	Id                  int
 	FirstName           string
 	LastName            string
@@ -66,7 +66,7 @@ type User struct {
 	PhoneNumber         string
 }
 
-type UserInsert struct {
+type User struct {
 	Id          int
 	AccountId   int
 	FirstName   string
@@ -100,12 +100,12 @@ type Performance struct {
 }
 
 type Place struct {
-	id       int
+	Id       int
 	SectorId int
 	Name     string
 }
 
-type PosterInsert struct {
+type Poster struct {
 	Id         int
 	AccountId  int
 	ScheduleId int
@@ -151,14 +151,14 @@ func NewTheaterData(db *sql.DB) *TheaterData {
 	return &TheaterData{db: db}
 }
 
-func (u TheaterData) ReadAllTickets() ([]Ticket, error) {
-	var tickets []Ticket
+func (u TheaterData) ReadAllTickets() ([]SelectTicket, error) {
+	var tickets []SelectTicket
 	rows, err := u.db.Query(readAllTicketsQuery)
 	if err != nil {
 		return nil, fmt.Errorf("can't get tickets from database, error:%w", err)
 	}
 	for rows.Next() {
-		var temp Ticket
+		var temp SelectTicket
 		err = rows.Scan(&temp.Id, &temp.PerformanceName, &temp.GenreName, &temp.PerformanceDuration,
 			&temp.DateTime, &temp.HallName, &temp.HallCapacity, &temp.LocationAddress, &temp.LocationPhoneNumber,
 			&temp.SectorName, &temp.Place, &temp.Price, &temp.DateOfIssue, &temp.Paid, &temp.Reservation, &temp.Destroyed)
@@ -170,14 +170,14 @@ func (u TheaterData) ReadAllTickets() ([]Ticket, error) {
 	return tickets, nil
 }
 
-func (u TheaterData) ReadAllPosters() ([]Poster, error) {
-	var posters []Poster
+func (u TheaterData) ReadAllPosters() ([]SelectPoster, error) {
+	var posters []SelectPoster
 	rows, err := u.db.Query(readAllPostersQuery)
 	if err != nil {
 		return nil, fmt.Errorf("can't get posters from database, error:%w", err)
 	}
 	for rows.Next() {
-		var temp Poster
+		var temp SelectPoster
 		err = rows.Scan(&temp.Id, &temp.PerformanceName, &temp.GenreName, &temp.PerformanceDuration,
 			&temp.DateTime, &temp.HallName, &temp.HallCapacity, &temp.LocationAddress, &temp.LocationPhoneNumber,
 			&temp.Comment)
@@ -189,14 +189,14 @@ func (u TheaterData) ReadAllPosters() ([]Poster, error) {
 	return posters, nil
 }
 
-func (u TheaterData) ReadAllUsers(account Account) ([]User, error) {
-	var users []User
+func (u TheaterData) ReadAllUsers(account Account) ([]SelectUser, error) {
+	var users []SelectUser
 	rows, err := u.db.Query(readAllUsersQuery, account.Id)
 	if err != nil {
 		return nil, fmt.Errorf("can't get users from database, error:%w", err)
 	}
 	for rows.Next() {
-		var temp User
+		var temp SelectUser
 		err = rows.Scan(&temp.Id, &temp.FirstName, &temp.LastName, &temp.Role,
 			&temp.LocationAddress, &temp.LocationPhoneNumber, &temp.PhoneNumber)
 		if err != nil {
@@ -255,10 +255,10 @@ func (u TheaterData) AddPlace(place Place) error {
 	return nil
 }
 
-func (u TheaterData) AddPoster(poster PosterInsert) error {
+func (u TheaterData) AddPoster(poster Poster) error {
 	_, err := u.db.Exec(insertPoster, poster.AccountId, poster.ScheduleId, poster.Comment)
 	if err != nil {
-		return fmt.Errorf("can't inser Poster to database, error: %w", err)
+		return fmt.Errorf("can't inser SelectPoster to database, error: %w", err)
 	}
 	return nil
 }
@@ -295,19 +295,19 @@ func (u TheaterData) AddSector(sector Sector) error {
 	return nil
 }
 
-func (u TheaterData) AddTicket(ticket TicketInsert) error {
+func (u TheaterData) AddTicket(ticket Ticket) error {
 	_, err := u.db.Exec(insertTicket, ticket.AccountId, ticket.ScheduleId,
 		ticket.PlaceId, ticket.DateOfIssue, ticket.Paid, ticket.Reservation, ticket.Destroyed)
 	if err != nil {
-		return fmt.Errorf("can't inser Ticket to database, error: %w", err)
+		return fmt.Errorf("can't inser SelectTicket to database, error: %w", err)
 	}
 	return nil
 }
 
-func (u TheaterData) AddUser(user UserInsert) error {
+func (u TheaterData) AddUser(user User) error {
 	_, err := u.db.Exec(insertUser, user.AccountId, user.FirstName, user.LastName, user.RoleId, user.LocationId, user.PhoneNumber)
 	if err != nil {
-		return fmt.Errorf("can't inser User to database, error: %w", err)
+		return fmt.Errorf("can't inser SelectUser to database, error: %w", err)
 	}
 	return nil
 }
@@ -361,17 +361,17 @@ func (u TheaterData) UpdatePerformance(performance Performance) error {
 }
 
 func (u TheaterData) UpdatePlace(place Place) error {
-	_, err := u.db.Exec(updatePlace, place.SectorId, place.Name, place.id)
+	_, err := u.db.Exec(updatePlace, place.SectorId, place.Name, place.Id)
 	if err != nil {
 		return fmt.Errorf("can't update Place to database, error: %w", err)
 	}
 	return nil
 }
 
-func (u TheaterData) UpdatePoster(poster PosterInsert) error {
+func (u TheaterData) UpdatePoster(poster Poster) error {
 	_, err := u.db.Exec(updatePoster, poster.AccountId, poster.ScheduleId, poster.Comment, poster.Id)
 	if err != nil {
-		return fmt.Errorf("can't update Poster to database, error: %w", err)
+		return fmt.Errorf("can't update SelectPoster to database, error: %w", err)
 	}
 	return nil
 }
@@ -408,20 +408,20 @@ func (u TheaterData) UpdateSector(sector Sector) error {
 	return nil
 }
 
-func (u TheaterData) UpdateTicket(ticket TicketInsert) error {
+func (u TheaterData) UpdateTicket(ticket Ticket) error {
 	_, err := u.db.Exec(updateTicket, ticket.AccountId, ticket.ScheduleId,
 		ticket.PlaceId, ticket.DateOfIssue, ticket.Paid, ticket.Reservation, ticket.Destroyed, ticket.Id)
 	if err != nil {
-		return fmt.Errorf("can't update Ticket to database, error: %w", err)
+		return fmt.Errorf("can't update SelectTicket to database, error: %w", err)
 	}
 	return nil
 }
 
-func (u TheaterData) UpdateUser(user UserInsert) error {
+func (u TheaterData) UpdateUser(user User) error {
 	_, err := u.db.Exec(updateUser, user.AccountId, user.FirstName, user.LastName, user.RoleId,
 		user.LocationId, user.PhoneNumber, user.Id)
 	if err != nil {
-		return fmt.Errorf("can't update User to database, error: %w", err)
+		return fmt.Errorf("can't update SelectUser to database, error: %w", err)
 	}
 	return nil
 }

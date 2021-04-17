@@ -3,7 +3,7 @@ package data
 import (
 	"fmt"
 
-	"gorm.io/gorm"
+	"github.com/jinzhu/gorm"
 )
 
 type Account struct {
@@ -154,18 +154,18 @@ func NewTheaterData(db *gorm.DB) *TheaterData {
 
 func (u TheaterData) ReadAllTickets() ([]SelectTicket, error) {
 	var tickets []SelectTicket
-	rows, err := u.db.Table("tickets").Select("tickets.id, performance.name, genre.name, " +
-		"performance.duration, schedule.date, halls.name, halls.capacity, locations.address, " +
-		"locations.phone_number, sectors.name, places.name, price.price, tickets.date_of_issue, " +
+	rows, err := u.db.Table("tickets").Select("tickets.id, performances.name, genres.name, " +
+		"performances.duration, schedules.date, halls.name, halls.capacity, locations.address, " +
+		"locations.phone_number, sectors.name, places.name, prices.price, tickets.date_of_issue, " +
 		"tickets.paid, tickets.reservation, tickets.destroyed").
-		Joins("JOIN schedule on schedule.id = tickets.schedule_id").
-		Joins("JOIN performance on schedule.performance_id = performance.id").
-		Joins("JOIN genre on performance.genre_id = genre.id").
-		Joins("JOIN halls on schedule.hall_id = halls.id").
+		Joins("JOIN schedules on schedules.id = tickets.schedule_id").
+		Joins("JOIN performances on schedules.performance_id = performances.id").
+		Joins("JOIN genres on performances.genre_id = genres.id").
+		Joins("JOIN halls on schedules.hall_id = halls.id").
 		Joins("JOIN locations on halls.location_id = locations.id").
 		Joins("JOIN places on tickets.place_id = places.id").
 		Joins("JOIN sectors on places.sector_id = sectors.id").
-		Joins("JOIN price on performance.id = price.performance_id and sectors.id = price.sector_id").
+		Joins("JOIN prices on performances.id = prices.performance_id and sectors.id = prices.sector_id").
 		Rows()
 	if err != nil {
 		return nil, fmt.Errorf("can't read users from database, error:%w", err)
@@ -183,12 +183,12 @@ func (u TheaterData) ReadAllTickets() ([]SelectTicket, error) {
 
 func (u TheaterData) ReadAllPosters() ([]SelectPoster, error) {
 	var posters []SelectPoster
-	rows, err := u.db.Table("poster").Select("poster.id, performance.name, genre.name, " +
-		"performance.duration, schedule.date, halls.name, halls.capacity, locations.address, locations.phone_number, poster.comment ").
-		Joins("JOIN schedule on schedule.id = poster.schedule_id").
-		Joins("JOIN performance on schedule.performance_id = performance.id").
-		Joins("JOIN genre on performance.genre_id = genre.id").
-		Joins("JOIN halls on schedule.hall_id = halls.id").
+	rows, err := u.db.Table("posters").Select("posters.id, performances.name, genres.name, " +
+		"performances.duration, schedules.date, halls.name, halls.capacity, locations.address, locations.phone_number, posters.comment ").
+		Joins("JOIN schedules on schedules.id = posters.schedule_id").
+		Joins("JOIN performances on schedules.performance_id = performances.id").
+		Joins("JOIN genres on performances.genre_id = genres.id").
+		Joins("JOIN halls on schedules.hall_id = halls.id").
 		Joins("JOIN locations on halls.location_id = locations.id").
 		Rows()
 	if err != nil {
