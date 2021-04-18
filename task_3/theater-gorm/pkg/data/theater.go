@@ -172,7 +172,10 @@ func (u TheaterData) ReadAllTickets() ([]SelectTicket, error) {
 	}
 	for rows.Next() {
 		temp := SelectTicket{}
-		err := rows.Scan(&temp.Id, &temp.PerformanceName, &temp.GenreName, &temp.PerformanceDuration, &temp.DateTime, &temp.HallName, &temp.HallCapacity, &temp.LocationAddress, &temp.LocationPhoneNumber, &temp.SectorName, &temp.Place, &temp.Price, &temp.DateOfIssue, &temp.Paid, &temp.Reservation, &temp.Destroyed)
+		err := rows.Scan(&temp.Id, &temp.PerformanceName, &temp.GenreName, &temp.PerformanceDuration,
+			&temp.DateTime, &temp.HallName, &temp.HallCapacity, &temp.LocationAddress,
+			&temp.LocationPhoneNumber, &temp.SectorName, &temp.Place, &temp.Price, &temp.DateOfIssue,
+			&temp.Paid, &temp.Reservation, &temp.Destroyed)
 		if err != nil {
 			return nil, fmt.Errorf("can't scan tickets from database, error:%w", err)
 		}
